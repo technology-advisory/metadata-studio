@@ -11,3 +11,17 @@ dist/
 coverage/
 *.zip
 samples/private/
+.dev.vars
+.dev.vars.*
+.wrangler/
+samples/
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+*.jpg
+*.jpeg
+*.png
+*.mp3
+*.mp4
+*.mov

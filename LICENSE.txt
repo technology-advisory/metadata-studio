@@ -1,2 +1,0 @@
-Copyright (c) 2026 OpenTrust Group.
-Proyecto preparado para uso interno/demostrativo. Ajustar la licencia pública antes de publicar el repositorio si procede.

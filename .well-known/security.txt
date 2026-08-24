@@ -1,0 +1,4 @@
+Contact: mailto:macarriazo@opentrust.group
+Expires: 2027-08-24T00:00:00Z
+Preferred-Languages: es, en
+Canonical: https://metadata-studio.opentrust.group/.well-known/security.txt

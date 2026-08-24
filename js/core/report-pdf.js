@@ -34,7 +34,7 @@
     rect(p,42,303,511,46,C.soft,C.line);txt(p,'SHA-256 · ORIGINAL',54,334,6.8,'F2',C.muted);txt(p,d.originalHash,54,315,7.3,'F1',C.ink);
     rect(p,42,242,511,46,C.soft,C.line);txt(p,verificationOnly?'SHA-256 · ARCHIVO VERIFICADO':'SHA-256 · COPIA SANEADA',54,273,6.8,'F2',C.muted);txt(p,d.cleanHash,54,254,7.3,'F1',C.ink);
     txt(p,'Alcance de la verificación',42,210,12,'F2',C.ink);line(p,42,202,553,202,C.line);
-    let yy=183;yy=para(p,'Metadata Studio documenta los controles ejecutados sobre el formato analizado. La verificación se limita a los analizadores compatibles y no constituye una certificación de ausencia absoluta de información oculta.',42,yy,105,8.2,11,C.muted);yy-=5;para(p,verificationOnly?'Todo el proceso se ha ejecutado localmente en el navegador. El archivo no se ha modificado, enviado ni almacenado en ningún servidor de OpenTrust.':'Todo el proceso se ha ejecutado localmente en el navegador. El archivo original y la copia saneada no se han enviado ni almacenado en ningún servidor de OpenTrust.',42,yy,105,8.2,11,C.muted);
+    let yy=183;yy=para(p,'El informe omite por defecto los valores originales eliminados para no reexponer información sensible. Metadata Studio documenta los controles ejecutados sobre el formato analizado. La verificación se limita a los analizadores compatibles y no constituye una certificación de ausencia absoluta de información oculta.',42,yy,105,8.2,11,C.muted);yy-=5;para(p,verificationOnly?'Todo el proceso se ha ejecutado localmente en el navegador. El archivo no se ha modificado, enviado ni almacenado en ningún servidor de OpenTrust.':'Todo el proceso se ha ejecutado localmente en el navegador. El archivo original y la copia saneada no se han enviado ni almacenado en ningún servidor de OpenTrust.',42,yy,105,8.2,11,C.muted);
 
     // details pages
     const chunks=[];for(let i=0;i<selected.length;i+=15)chunks.push(selected.slice(i,i+15));if(!chunks.length)chunks.push([]);
@@ -44,8 +44,8 @@
       let y2=655;rect(q,42,y2,511,25,C.navy);txt(q,'CAMPO',52,y2+8,7,'F2',C.white);txt(q,'ORIGEN',240,y2+8,7,'F2',C.white);txt(q,'VALOR DETECTADO',340,y2+8,7,'F2',C.white);y2-=2;
       if(!chunk.length){rect(q,42,y2-44,511,44,C.soft,C.line);txt(q,verificationOnly?'No se han detectado metadatos sensibles con contenido significativo.':'No se seleccionaron elementos para eliminar.',55,y2-27,8.5,'F1',C.muted);y2-=54}
       chunk.forEach((f,j)=>{
-        const val=clean(String(f.value||'')).slice(0,120), source=clean(f.source||f.category||'-'), key=clean(displayKey(f.key||'-'));
-        const vh=wrap(val,34), kh=wrap(key,27), rows=Math.max(vh.length,kh.length,1),h=Math.max(35,13+rows*10);rect(q,42,y2-h,511,h,j%2?C.soft:C.white,C.line);kh.forEach((t,k)=>txt(q,t,52,y2-19-k*10,7.6,k===0?'F2':'F1',C.ink));txt(q,source.slice(0,21),240,y2-19,7.4,'F1',C.muted);vh.forEach((t,k)=>txt(q,t,340,y2-19-k*10,7.4,'F1',C.ink));y2-=h;
+        const source=clean(f.source||f.category||'-'), key=clean(displayKey(f.key||'-'));
+        const kh=wrap(key,27), rows=Math.max(kh.length,1),h=Math.max(35,13+rows*10);rect(q,42,y2-h,511,h,j%2?C.soft:C.white,C.line);kh.forEach((t,k)=>txt(q,t,52,y2-19-k*10,7.6,k===0?'F2':'F1',C.ink));txt(q,source.slice(0,21),240,y2-19,7.4,'F1',C.muted);txt(q,'Eliminado / saneado',340,y2-19,7.4,'F2',C.green);y2-=h;
       });
       if(idx===chunks.length-1){y2-=18;txt(q,'Verificación posterior',42,y2,12,'F2',C.ink);line(q,42,y2-8,553,y2-8,C.line);y2-=28;if(!after.length){pill(q,'SIN HALLAZGOS SENSIBLES COMPATIBLES',42,y2-4,215,C.greenSoft,C.green);y2-=34;para(q,'No se han detectado metadatos sensibles mediante los controles compatibles con este formato después del saneamiento.',42,y2,102,8.3,11,C.muted)}else{pill(q,`${after.length} HALLAZGOS POSTERIORES`,42,y2-4,155,[1,.96,.89],C.amber);y2-=34;after.slice(0,6).forEach(f=>{txt(q,`• ${clean(f.key).slice(0,50)}`,48,y2,8,'F2',C.ink);txt(q,clean(String(f.value)).slice(0,70),230,y2,7.7,'F1',C.muted);y2-=17})}}
     });

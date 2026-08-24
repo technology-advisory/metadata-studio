@@ -17,7 +17,7 @@
     put16(a,o,n){a[o]=n&255;a[o+1]=(n>>>8)&255}, put32(a,o,n){a[o]=n&255;a[o+1]=(n>>>8)&255;a[o+2]=(n>>>16)&255;a[o+3]=(n>>>24)&255},
     concat(parts){ const len=parts.reduce((s,p)=>s+p.length,0), out=new Uint8Array(len); let o=0; for(const p of parts){out.set(p,o);o+=p.length;} return out; },
     async sha256(bytes){const h=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('');},
-    safePath(p){p=String(p||'').replace(/\\/g,'/'); if(p.startsWith('/')||/^[A-Za-z]:\//.test(p)||p.split('/').includes('..')) return null; return p.replace(/^\.\//,'');},
+    safePath(p){p=String(p||'').replace(/\\/g,'/'); if(p.startsWith('/')||/^[A-Za-z]:(?:\/|[^/])/.test(p)||p.startsWith('//')||p.split('/').includes('..')) return null; return p.replace(/^\.\//,'');},
     dosTimeDate(date=new Date()){let y=Math.max(1980,date.getFullYear());return {time:(date.getHours()<<11)|(date.getMinutes()<<5)|(date.getSeconds()>>1),date:((y-1980)<<9)|((date.getMonth()+1)<<5)|date.getDate()};}
   };
 })();

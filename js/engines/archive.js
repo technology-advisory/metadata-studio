@@ -38,6 +38,7 @@
       if(!U.safePath(name))f.push(U.finding('Ruta insegura',name,'Archivo comprimido',true,{source:'TAR',risk:'critico',path:name}));
       else f.push(U.finding('Elemento interno',name,'Archivo comprimido',false,{source:'TAR',risk:'info',path:name,kind:'technical'}));
       if(['1','2','3','4','6'].includes(typeflag))f.push(U.finding('Tipo de entrada especial',`${name} · typeflag ${typeflag}`,'Archivo comprimido',true,{source:'TAR',risk:'alto',path:name}));
+      if(['x','g','L','K'].includes(typeflag))f.push(U.finding('Cabecera extendida TAR',`${name} · typeflag ${typeflag}`,'Archivo comprimido',false,{source:'TAR PAX/GNU',risk:'medio',path:name,kind:'coverage'}));
       if(uname)f.push(U.finding('Usuario TAR',uname,'Identidad',true,{source:'TAR header',risk:'alto',path:name}));if(gname)f.push(U.finding('Grupo TAR',gname,'Identidad',true,{source:'TAR header',risk:'alto',path:name}));
       total+=size;if(total>MAX_UNCOMPRESSED)throw new Error(`TAR rechazado: tamaño agregado superior a ${U.humanSize(MAX_UNCOMPRESSED)}.`);p=next;
     }
@@ -61,14 +62,14 @@
     async clean(bytes,selected,file){
       const ext=U.ext(file.name);S.assertSignature(bytes,file);
       if(ext==='zip'){
-        const {z}=zipList(bytes);for(const e of z.entries){if(!U.safePath(e.name))throw new Error('El ZIP contiene rutas inseguras y no se reempaqueta automáticamente.');}
+        const {z}=zipList(bytes);for(const e of z.entries){if(!U.safePath(e.name))throw new Error('El ZIP contiene rutas inseguras y no se reempaqueta automáticamente.');if((e.flags&1)!==0)throw new Error(`El ZIP contiene una entrada cifrada (${e.name}) y no puede reempaquetarse de forma segura.`);}
         const byPath=new Map();for(const f of selected){if(!f.path)continue;const top=f.path.split(' → ')[0];if(!byPath.has(top))byPath.set(top,[]);byPath.get(top).push(f);}
         for(const [path,items] of byPath){let original;try{original=await z.read(path);}catch(_){continue;}let eng;try{eng=await S.engineForBytes(original,{name:path,type:''},true);}catch(_){continue;}if(!eng||eng===M.archive||eng===M.universal)continue;try{const local=items.map(x=>({...x,path:''})),cleaned=await eng.clean(original,local,{name:path,type:''});z.set(path,cleaned);}catch(_){}}
         return z.build();
       }
       if(ext==='tar'){
         const out=bytes.slice();let p=0,count=0;
-        while(p+512<=out.length){const h=out.subarray(p,p+512);if(h.every(x=>x===0))break;if(++count>MAX_FILES)throw new Error('TAR supera el límite de entradas.');const sizeTxt=U.text(h.subarray(124,136)).replace(/\0.*$/,'').trim();if(!/^[0-7 ]*$/.test(sizeTxt))throw new Error('TAR inválido.');const size=parseInt(sizeTxt,8)||0,next=p+512+Math.ceil(size/512)*512;if(next>out.length)throw new Error('TAR truncado.');if(selected.some(f=>f.source==='TAR header')){h.fill(0,265,329);for(let i=148;i<156;i++)h[i]=32;let sum=0;for(const x of h)sum+=x;const oct=sum.toString(8).padStart(6,'0')+'\0 ';h.set(U.utf8(oct),148);}p=next;}return out;
+        while(p+512<=out.length){const h=out.subarray(p,p+512);if(h.every(x=>x===0))break;if(++count>MAX_FILES)throw new Error('TAR supera el límite de entradas.');const sizeTxt=U.text(h.subarray(124,136)).replace(/\0.*$/,'').trim();if(!/^[0-7 ]*$/.test(sizeTxt))throw new Error('TAR inválido.');const size=parseInt(sizeTxt,8)||0,next=p+512+Math.ceil(size/512)*512;if(next>out.length)throw new Error('TAR truncado.');const name=U.text(h.subarray(0,100)).replace(/\0.*$/,'');const cleanThis=selected.some(f=>f.source==='TAR header'&&f.path===name);if(cleanThis){h.fill(0,108,124);h.fill(0,136,148);h.fill(0,265,329);for(const [a,b] of [[108,116],[116,124],[136,148]]){const z='0'.repeat(Math.max(1,b-a-1))+'\0';h.set(U.utf8(z).subarray(0,b-a),a);}for(let i=148;i<156;i++)h[i]=32;let sum=0;for(const x of h)sum+=x;const oct=sum.toString(8).padStart(6,'0')+'\0 ';h.set(U.utf8(oct),148);}p=next;}return out;
       }
       throw new Error('Este contenedor se inspecciona, pero no se sanea automáticamente en esta versión.');
     }
