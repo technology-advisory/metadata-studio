@@ -1,0 +1,95 @@
+[
+  {
+    "name": "GRCREAL",
+    "url": "https://grcreal.com/",
+    "tagline": "Conocimiento especializado en Gobernanza, Riesgo, Cumplimiento y Ciberseguridad.",
+    "description": "Plataforma abierta con guías, marcos de referencia, comparativas, checklists, formación y recursos prácticos para profesionales de GRC, seguridad, cumplimiento normativo e inteligencia artificial.",
+    "icon": "shield",
+    "category": "docs",
+    "badgeIcon": "star"
+  },
+  {
+    "name": "FraudeDigital",
+    "url": "https://fraudedigital.es/",
+    "tagline": "Concienciación frente al fraude digital.",
+    "description": "Información, alertas, simuladores y recursos para prevenir phishing, smishing, vishing, ingeniería social y otras estafas digitales.",
+    "icon": "alert",
+    "category": "docs",
+    "badgeIcon": "shield"
+  },
+  {
+    "name": "Technology Advisory",
+    "url": "https://technology-advisory.es/",
+    "tagline": "Arquitectura empresarial, infraestructura, cloud y ciberseguridad.",
+    "description": "Arquitectura tecnológica, infraestructura, cloud, automatización, observabilidad, resiliencia y estrategia de ciberseguridad para organizaciones.",
+    "icon": "network",
+    "category": "docs",
+    "badgeIcon": "rocket"
+  },
+  {
+    "name": "CyberLibrary AI",
+    "url": "https://cyberlibrary-ai.es/",
+    "tagline": "Arquitectura, seguridad, auditoría y GRC de sistemas de inteligencia artificial.",
+    "description": "Guías con criterio, artefactos descargables y herramientas que se pueden utilizar de verdad. Contenido especializado, práctico y sin humo: lo que una respuesta genérica de IA no te va a dar.",
+    "icon": "ai",
+    "category": "docs",
+    "badgeIcon": "sparkles"
+  },
+  {
+    "name": "LexRadar",
+    "url": "https://lexradar.es/",
+    "tagline": "Investigación jurídica asistida por inteligencia artificial segura.",
+    "description": "Herramienta de apoyo para buscar, organizar, relacionar y analizar información jurídica procedente de fuentes públicas nacionales y europeas. Integra jurisprudencia, normativa, criterios administrativos y resoluciones notariales y registrales, junto con una biblioteca de prompts y capacidades de inteligencia artificial diseñadas con controles frente a la manipulación de instrucciones, la exposición de información sensible y las respuestas no verificadas.",
+    "icon": "radar",
+    "category": "apps",
+    "badgeIcon": "lock"
+  },
+  {
+    "name": "Arq Studio",
+    "url": "/apps/arq-studio.html",
+    "tagline": "Diseño y documentación profesional de arquitecturas de soluciones.",
+    "description": "Plataforma para crear, versionar y revisar HLD mediante asistentes guiados, modelo semántico y generación automática de C4 System Context, C4 Containers, vista lógica y vista física. Los módulos LLD y Arquitecto IA se encuentran en desarrollo.",
+    "icon": "diagram",
+    "category": "apps",
+    "status": "prev",
+    "badgeIcon": "bulb"
+  },
+  {
+    "name": "Audithub",
+    "url": "/apps/audithub.html",
+    "tagline": "Auditoría, cumplimiento y gestión de riesgos en un único espacio.",
+    "description": "Audithub centraliza auditorías, controles, evidencias, riesgos, hallazgos, acciones e informes, con gestión multi-marco y reutilización gobernada del trabajo ya realizado.",
+    "icon": "clipboard",
+    "category": "apps",
+    "status": "prev",
+    "badgeIcon": "shield"
+  },
+  {
+    "name": "Privacy Studio",
+    "url": "/apps/privacy-studio.html",
+    "tagline": "Anonimización documental segura, trazable y adaptada al contexto.",
+    "description": "Plataforma para detectar, revisar, anonimizar y validar datos personales en documentos mediante políticas diferenciadas según la finalidad de uso. Integra revisión humana, validación residual, trazabilidad y un enfoque local-first orientado a proteger la información desde el diseño.",
+    "icon": "shield",
+    "category": "apps",
+    "status": "prev",
+    "badgeIcon": "eye"
+  },
+  {
+    "name": "Link Studio",
+    "url": "https://link-studio.opentrust.group",
+    "tagline": "Análisis y optimización inteligente de enlaces compartidos.",
+    "description": "Aplicación local-first para pegar una URL, detectar automáticamente su plataforma, identificar parámetros de seguimiento y generar una versión limpia lista para copiar. No almacena historial ni envía los enlaces a servicios externos.",
+    "icon": "link",
+    "category": "apps",
+    "badgeIcon": "sparkles"
+  },
+  {
+    "name": "Metadata Studio",
+    "url": "https://metadata-studio.opentrust.group",
+    "tagline": "Análisis y limpieza segura de metadatos antes de compartir archivos.",
+    "description": "Herramienta local-first para detectar, clasificar y eliminar metadatos potencialmente sensibles en documentos, imágenes, multimedia y archivos comprimidos. Permite revisar los hallazgos, sanear los ficheros y generar un informe corporativo del proceso sin enviar el contenido a servicios externos.",
+    "icon": "metadata",
+    "category": "apps",
+    "badgeIcon": "shield"
+  }
+]
