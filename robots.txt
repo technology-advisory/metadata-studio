@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://metadata-studio.opentrust.group/sitemap.xml
