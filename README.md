@@ -57,4 +57,3 @@ Abrir `http://localhost:8080`.
 ## Nota de alcance
 
 Metadata Studio no utiliza la frase “0 metadatos”. La verificación significa que no se han detectado metadatos sensibles mediante los controles compatibles con el formato analizado. Algunos formatos pueden contener estructuras no cubiertas por esta versión.
-"# metadata-studio" 
