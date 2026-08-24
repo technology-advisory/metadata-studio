@@ -1,0 +1,40 @@
+# Metadata Studio — solo publicar los activos web necesarios
+
+# Control del repositorio / CI
+.git/
+.github/
+.gitignore
+.assetsignore
+
+# Configuración de despliegue
+wrangler.json
+wrangler.jsonc
+wrangler.toml
+package.json
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Documentación interna y auditoría
+README.md
+README-*.md
+docs/
+tests/
+samples/
+LICENSE.txt
+VERSION
+
+# Artefactos y temporales
+*.zip
+*.bak
+*.old
+*.tmp
+*.log
+*.map
+
+# Secretos / configuración local defensiva
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
