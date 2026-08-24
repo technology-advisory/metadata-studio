@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+.env
+.env.*
+node_modules/
+dist/
+coverage/
+*.zip
+samples/private/
