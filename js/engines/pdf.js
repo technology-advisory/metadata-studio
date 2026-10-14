@@ -61,10 +61,22 @@
     if(/\/Filter\s*\/FlateDecode\b/.test(dict)||/\/Filter\s*\[\s*\/FlateDecode\s*\]/.test(dict))return'flate';
     return'unsupported';
   }
-  async function inflate(bytes,label){
-    if(typeof DecompressionStream==='undefined')throw new Error('Este navegador no soporta la descompresión necesaria para PDF modernos.');
+  async function inflateOnce(bytes,label){
     const ds=new DecompressionStream('deflate');
     return S.readStreamLimited(new Blob([bytes]).stream().pipeThrough(ds),MAX_DECODED_STREAM,label||'stream PDF');
+  }
+  async function inflate(bytes,label){
+    if(typeof DecompressionStream==='undefined')throw new Error('Este navegador no soporta la descompresión necesaria para PDF modernos.');
+    try{return await inflateOnce(bytes,label);}catch(err){
+      // Metadata Studio mantiene el tamaño físico del stream al sanear PDFs modernos.
+      // Si la recompresión ocupa menos bytes, el hueco se rellena con NUL.
+      // Muchos lectores PDF ignoran ese padding tras el fin del zlib, pero
+      // DecompressionStream (Chromium/Node) lo considera "junk". Reintentamos
+      // únicamente cuando existe padding NUL final y nunca alteramos el fichero.
+      let end=bytes.length;while(end>2&&bytes[end-1]===0)end--;
+      if(end===bytes.length)throw err;
+      try{return await inflateOnce(bytes.subarray(0,end),label);}catch(_){throw err;}
+    }
   }
   async function deflate(bytes,maxBytes,label){
     if(typeof CompressionStream==='undefined')throw new Error('Este navegador no soporta la recompresión necesaria para sanear PDF modernos.');
@@ -85,7 +97,7 @@
       if(m){const v=decodePdfString(m[1]);if(v)f.push(U.finding(k,v,'PDF info',true,{source:'PDF Info Dictionary'}));}
     }return f;
   }
-  function blankToken(t){if(t[0]==='(')return '('+' '.repeat(Math.max(0,t.length-2))+')';if(t[0]==='<')return '<'+'0'.repeat(Math.max(0,t.length-2))+'>';return t;}
+  function blankToken(t){if(t[0]==='(')return '('+' '.repeat(Math.max(0,t.length-2))+')';if(t[0]==='<'){const h=t.slice(1,-1),n=h.length;if(/^FEFF/i.test(h)&&n>=4){let body='FEFF';while(body.length+4<=n)body+='0020';if(body.length<n)body+='0'.repeat(n-body.length);return '<'+body+'>';}let body='';while(body.length+2<=n)body+='20';if(body.length<n)body+='0';return '<'+body+'>'; }return t;}
   function blankInfo(body,keys){
     let out=body;for(const k of fields){if(!keys.has(k))continue;const re=new RegExp('(\\/'+k+'\\s*)(\\((?:\\\\.|[^\\\\)])*\\)|<[^>]*>)','g');out=out.replace(re,(m,a,b)=>a+blankToken(b));}
     if(out.length!==body.length)throw new Error('Saneamiento PDF abortado: cambio inesperado en el tamaño del diccionario /Info.');
