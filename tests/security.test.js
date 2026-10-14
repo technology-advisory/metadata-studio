@@ -15,7 +15,19 @@ for(const f of ['js/core/utils.js','js/core/security.js','js/core/zip-create.js'
   const corrupt=zip.slice();const dv=new DataView(corrupt.buffer);let eocd=-1;for(let i=corrupt.length-22;i>=0;i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break;}}dv.setUint32(eocd+16,0xfffffff0,true);assert.throws(()=>new M.ZipLite(corrupt),/fuera de límites/);
   const pdf=`%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n2 0 obj\n<< /Title (Informe) /Author (Alice) >>\nendobj\nxref\n0 3\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \ntrailer\n<< /Size 3 /Root 1 0 R /Info 2 0 R >>\nstartxref\n110\n%%EOF`;
   const pf=await M.pdf.analyze(U.latin1ToBytes(pdf));assert(pf.some(x=>x.key==='Author'&&x.value==='Alice'));
-  const complex=pdf.replace('<< /Type /Catalog >>','<< /Type /Catalog /Foo 3 0 R >>').replace('xref','3 0 obj\n<< /Type /ObjStm >>\nendobj\nxref');
-  await assert.rejects(()=>M.pdf.analyze(U.latin1ToBytes(complex)),/Object Streams/);
+  // PDF moderno: /Info dentro de Object Stream FlateDecode y trailer en XRef stream.
+  const infoBody='<< /Title (Guia moderna) /Producer (WeasyPrint 70.0) >>';
+  const objIndex='10 0 ';
+  const objDecoded=Buffer.from(objIndex+infoBody,'latin1');
+  const objCompressed=zlib.deflateSync(objDecoded);
+  const objHead=`%PDF-1.7\n20 0 obj\n<</Type /ObjStm/N 1/First ${objIndex.length}/Filter /FlateDecode/Length ${objCompressed.length}>>\nstream\n`;
+  const xrefObj=`\nendstream\nendobj\n21 0 obj\n<</Type /XRef/Size 22/Root 1 0 R/Info 10 0 R/Filter /FlateDecode/Length 8>>\nstream\nx\x9c\x03\x00\x00\x00\x00\x01\nendstream\nendobj\nstartxref\n0\n%%EOF`;
+  const modern=Buffer.concat([Buffer.from(objHead,'latin1'),objCompressed,Buffer.from(xrefObj,'latin1')]);
+  const modernFindings=await M.pdf.analyze(new Uint8Array(modern));
+  assert(modernFindings.some(x=>x.key==='Title'&&x.value==='Guia moderna'));
+  assert(modernFindings.some(x=>x.key==='Producer'&&x.value==='WeasyPrint 70.0'));
+  const modernClean=await M.pdf.clean(new Uint8Array(modern),modernFindings.filter(x=>x.key==='Title'||x.key==='Producer'));
+  const modernAfter=await M.pdf.analyze(modernClean);
+  assert(!modernAfter.some(x=>x.key==='Title'||x.key==='Producer'));
   console.log('OK security tests');
 })().catch(e=>{console.error(e);process.exit(1)});
